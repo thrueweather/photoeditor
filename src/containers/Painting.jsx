@@ -1,0 +1,170 @@
+import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import Ionicon from 'react-ionicons';
+
+import { START_ANGLE, END_ANGLE } from '../constants/types';
+import { 
+    eventZoomIncrement, 
+    paintingOnCanvas, 
+    undoLastPoint, 
+    redoLastPoint, 
+    eventOnColor, 
+    eventOnFontSize, 
+    eventOnCleaning 
+} from '../actions';
+
+class Painting  extends Component {
+    painting() {
+        const canvasBody = document.getElementById('canvas');
+        const ctx = canvasBody.getContext('2d');   
+        canvasBody.addEventListener('mousedown', e => {
+            this.props.paintingOnCanvas(true, e.offsetX, e.offsetY, "begin");
+            this.props.eventOnCleaning(false);
+        });
+        canvasBody.addEventListener('mousemove', e => {
+            let {painting, points} = this.props;
+            let x = e.offsetX;
+            let y = e.offsetY;
+
+            if(painting) {
+                this.props.paintingOnCanvas(painting, x, y, "draw");
+                for(let item in points) {
+                    ctx.fillStyle = `${points[item].color}`;
+                    ctx.strokeStyle = `${points[item].color}`;
+                    ctx.beginPath();
+                    ctx.arc(points[item].x, points[item].y, points[item].size, START_ANGLE, END_ANGLE);
+                    ctx.stroke();
+                    ctx.fill();
+                }
+            }
+        });
+        canvasBody.addEventListener('mouseup', e => this.props.paintingOnCanvas(false, e.offsetX, e.offsetY, "end"));
+    };
+
+    eventOnUndo() {
+        const canvasBody = document.getElementById('canvas');
+        const ctx = canvasBody.getContext('2d');
+        let {points} = this.props;
+
+        ctx.clearRect(0, 0, canvasBody.width, canvasBody.height);
+
+        this.props.undoLastPoint();
+
+        for(let item in points) {
+            ctx.fillStyle = `${points[item].color}`;
+            ctx.strokeStyle = `${points[item].color}`;
+            ctx.beginPath();
+            ctx.arc(points[item].x, points[item].y, points[item].size, START_ANGLE, END_ANGLE);
+            ctx.stroke();
+            ctx.fill();
+        }
+    };
+
+    eventOnRedo() {
+        const canvasBody = document.getElementById('canvas');
+        const ctx = canvasBody.getContext('2d');
+        let {redo} = this.props;
+
+        ctx.clearRect(0, 0, canvasBody.width, canvasBody.height);
+
+        this.props.redoLastPoint();
+        
+        for(let item in redo) {
+            ctx.fillStyle = `${redo[item].color}`;
+            ctx.strokeStyle = `${redo[item].color}`;
+            ctx.beginPath();
+            ctx.arc(redo[item].x, redo[item].y, redo[item].size, START_ANGLE, END_ANGLE);
+            ctx.stroke();
+            ctx.fill();
+        }
+    };
+
+    cleaningPencil() {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.addEventListener('mousedown', () => {
+            this.props.paintingOnCanvas(false);
+            this.props.eventOnCleaning(true);
+        });
+        canvas.addEventListener('mousemove', event => {
+            if(this.props.cleaning) {
+                let x = event.offsetX;
+                let y = event.offsetY;
+                ctx.clearRect(x, y, this.props.fontSize, END_ANGLE);
+            }
+        });
+        canvas.addEventListener('mouseup', () => this.props.eventOnCleaning(false))
+    };
+
+    fontSizeChange = e => this.props.eventOnFontSize(e.target.value);
+
+    color = e => this.props.eventOnColor(e.target.value);
+
+    render() {
+        const UndoRedo = () => {
+            let visibleBlock = !this.props.image ? {display: 'block'} : {display: 'none'};
+            let visibleUndo = (this.props.points.length && this.props.redo.length);
+            let visibleRedo = (this.props.points.length < this.props.redo.length);
+
+            return (
+                <div style={visibleBlock}>
+                    {visibleUndo
+                    ? <button onClick={() => this.eventOnUndo()}>
+                        <Ionicon icon="ios-undo-outline" color={this.props.decor.color} fontSize="23px"/>
+                      </button> 
+                    : <div></div>}
+                    {visibleRedo
+                    ? <button onClick={() => this.eventOnRedo()}>
+                        <Ionicon icon="ios-redo-outline" color={this.props.decor.color} fontSize="23px"/>
+                      </button>
+                    : <div></div>}
+                </div>
+            )
+        }
+
+        return (
+            <div className="painting">
+                <div className="painting_color_size">
+                    <button onClick={()=> this.painting()} title={"paint"}>
+                        <Ionicon icon="ios-brush-outline" color={this.props.decor.color} fontSize="23px"/>
+                    </button>
+                    <button onClick={() => this.cleaningPencil()} title={"cleaning"}>
+                        <Ionicon icon="ios-cube-outline" color={this.props.decor.color} fontSize="15px"/>
+                    </button>
+                    <input onChange={this.color} type="text" placeholder={this.props.color} maxLength="10" />
+                    <input onChange={this.fontSizeChange} value={this.props.fontSize} type="number" />
+                </div>
+                <UndoRedo/>
+            </div>
+        )
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        decor: state.decor,
+        zoom: state.zoom,
+        painting: state.painting,
+        points: state.points,
+        redo: state.redo,
+        color: state.color,
+        fontSize: state.fontSize,
+        cleaning: state.cleaning,
+        image: state.image
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators({
+        eventZoomIncrement: eventZoomIncrement,
+        paintingOnCanvas: paintingOnCanvas,
+        undoLastPoint: undoLastPoint,
+        redoLastPoint: redoLastPoint,
+        eventOnColor: eventOnColor,
+        eventOnFontSize: eventOnFontSize,
+        eventOnCleaning: eventOnCleaning
+    }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Painting);

@@ -1,0 +1,46 @@
+.modal-wrapp {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 35%;
+    height: 35%;
+    margin: auto;
+    border-radius: 3px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+.modal-wrapp, .modal-constainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-wrapp, .modal-constainer, .modal-content {
+    background-color: #2c2b2b;
+}
+
+.modal-wrapp, .modal-constainer, .modal-content p {
+    color: white;
+}
+
+.input {
+    background-color: #3f4040;
+    border: none;
+    outline: none;
+    padding: 5px;
+    text-align: center;
+    color: white;
+}
+.input input { border-right: 1px solid #363636; }
+
+button {
+    background-color: #3f4040;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    margin: 0 5px;
+    padding: 5px;
+    cursor: pointer;
+    text-align: center;
+    color: white;
+}

@@ -1,0 +1,140 @@
+html, body {
+  height: 100%; }
+
+button {
+  background: none;
+  color: white;
+  border: none;
+  outline: none;
+  cursor: pointer; }
+
+input[type=range]{ -webkit-appearance: none; }
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 2px;
+    background: #616161;
+    border: none;
+    border-radius: 4px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: rgb(32, 175, 218);
+    margin-top: -6px;
+}
+
+input[type=range]:focus { outline: none; }
+
+input[type=range]:focus::-webkit-slider-runnable-track { background: #ccc; }
+
+.App {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  transition: .3s; }
+  .App .App-image-wrapp {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 0; }
+    .App .App-image-wrapp canvas {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0; }
+  .App .App-sidebar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    border-left: 1px solid #2d2c2c;
+    font-size: 16px; }
+    .App .App-sidebar input {
+      display: none; }
+    .App .App-sidebar input[type=text] {
+      background-color: #141516b5;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+      padding: 5px;
+      width: 20%;
+      text-align: center;
+      color: white; }
+    .App .App-sidebar input[type=number] {
+      background-color: #141516b5;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+      padding: 5px;
+      width: 12%;
+      text-align: center;
+      color: white;
+      margin-left: 10px; }
+    .App .App-sidebar .image-file {
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      padding: 5px;
+      color: white; }
+      .App .App-sidebar .image-file .file_upload {
+        position: relative;
+        overflow: hidden; }
+      .App .App-sidebar .image-file span {
+        position: relative; }
+      .App .App-sidebar .image-file input[type=file] {
+        opacity: 0; }
+    .App .App-sidebar .wrapp-filters .filter span {
+      display: none; }
+  .App .width-sidebar {
+    width: 25%;
+    text-align: left;
+    padding: 0 10px; }
+    .App .width-sidebar input {
+      display: block; }
+    .App .width-sidebar p {
+      text-align: left; }
+    .App .width-sidebar .image-file span {
+      cursor: pointer; }
+    .App .width-sidebar .wrapp-sizes {
+      display: flex;}
+    .App .width-sidebar .wrapp-sizes input {
+      font-size: 11px;}
+    .App .width-sidebar .zoom {
+      font-size: 12px; }
+    .App .width-sidebar .painting .painting_color_size {
+      display: flex;
+      align-items: center;}
+    .App .width-sidebar .wrapp-filters {
+      display: flex;
+      flex-direction: column; }
+      .App .width-sidebar .wrapp-filters .filter {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        margin: 3px; }
+        .App .width-sidebar .wrapp-filters .filter p {
+          width: 30%;
+          margin: 0;
+          background-color: #141516b5;
+          border-radius: 4px;
+          padding: 5px; }
+        .App .width-sidebar .wrapp-filters .filter span {
+          display: block; }
