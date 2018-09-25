@@ -21,12 +21,14 @@ import {
 import Painting from './Painting';
 import ModalFileName from '../components/ModalFileName';
 import ThemeController from '../containers/ThemeController';
+import SaveReset from '../components/SaveReset';
+import Zoom from '../components/Zoom';
 
 class CanvasSettings extends Component {
     state = {modalImageName: {visible: false, fileName: "image"}};
     fileImage = () => {
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
         const imageFile = this.imageFile.files[0];
 
         if(imageFile.type.substring(0, 6) === "image/") {
@@ -90,9 +92,9 @@ class CanvasSettings extends Component {
 
     zoomDecrement = () => this.props.zoom <= MAX_ZOOM ? this.props.eventZoomDecrement(ZOOM_COEFFICIENT) : this.props.eventZoomDecrement(ZOOM_STEP);
 
-    resetImageSettings() {
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');   
+    resetImageSettings() { 
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')  
         let x = 0;
         let y = 0;
 
@@ -107,11 +109,11 @@ class CanvasSettings extends Component {
         }
     };
 
-    saveImageOnDisk = () => document.getElementById("canvas").toBlob((blob) => saveAs(blob, `${this.state.modalImageName.fileName}.png`));
+    saveImageOnDisk = () => document.getElementById('canvas').toBlob((blob) => saveAs(blob, `${this.state.modalImageName.fileName}.png`));
 
     canvasCleaning() {
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         setTimeout(() => {
             window.location.reload();
@@ -134,7 +136,7 @@ class CanvasSettings extends Component {
                     <input name="myFile" type="file" onChange={this.fileImage} ref={imageFile=> this.imageFile = imageFile}/>
                 </label>
             </div>
-        );
+        )
 
         const styleOnSpan = this.props.image ? {opacity: 1} : {opacity: 0};
 
@@ -214,40 +216,7 @@ class CanvasSettings extends Component {
                 <span>height:</span>
                 <input type="number" onChange={this.canvasSizesHeight} value={this.props.sizes.height} />
             </div>
-        );
-
-        const Zoom = () => {
-            if(this.props.image) {
-                return (
-                    <div className="zoom">
-                        Zoom: 
-                        <button onClick={this.zoomDecrement}>
-                            <Ionicon icon="ios-remove-circle-outline" color={this.props.decor.color} fontSize="20px"/>
-                        </button>
-                        {`${this.props.zoom}%`}
-                        <button onClick={this.zoomIncrement}>
-                            <Ionicon icon="ios-add-circle-outline" color={this.props.decor.color} fontSize="20px"/>
-                        </button>
-                    </div>
-                )
-            } else {
-                return <div></div>;
-            }
-        };
-
-        const SaveReset = () => (
-            <div className="save_reset" style={this.props.image ? {opacity: '1'} : {opacity: '0.5', cursor: 'not-allowed'}}>
-                <button onClick={() => this.resetImageSettings()} title={'reload image filters'}>
-                    <Ionicon icon="ios-refresh-circle-outline" color={this.props.decor.color} fontSize="23px"/>
-                </button>
-                <button className="save" onClick={() => this.openDownloadWindow()} title={'save'}>
-                    <Ionicon icon="ios-cloud-download-outline" color={this.props.decor.color} fontSize="23px"/>
-                </button>
-                <button onClick={() => this.canvasCleaning()} title={"in trash"}>
-                    <Ionicon icon="ios-trash" color={this.props.decor.color} fontSize="23px"/>
-                </button>
-            </div>
-        );
+        )
 
         const VisibleModalWindow = this.state.modalImageName.visible && 
             <ModalFileName 
@@ -260,14 +229,25 @@ class CanvasSettings extends Component {
 
         return (
             <div>
-                <div className={visibleSidebar} style={{background: this.props.decor.background}} onMouseOver={() => this.props.openSidebar()}>
+                <div 
+                    className={visibleSidebar} 
+                    style={{background: this.props.decor.background}} 
+                    onMouseOver={() => this.props.openSidebar()}
+                >
                     <ThemeController/>
                     {ImageFile}
                     {Sizes}
-                    <Zoom/>
+                    <Zoom 
+                        zoomDecrement={this.zoomDecrement} 
+                        zoomIncrement={this.zoomIncrement}
+                    />
                     <Painting/>
                     {ranges}
-                    <SaveReset/>
+                    <SaveReset
+                        resetImage={() => this.resetImageSettings()}
+                        openWindow={() => this.openDownloadWindow()}
+                        cleaning={() => this.canvasCleaning()}
+                    />
                 </div>
                 {VisibleModalWindow}
             </div>
